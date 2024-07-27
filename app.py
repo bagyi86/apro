@@ -12,8 +12,6 @@ def search():
     min_price = data.get('minPrice', 0)
     max_price = data.get('maxPrice', float('inf'))
     location = data.get('location', '')
-    date_filter = data.get('date', '30d')
-    availability = data.get('availability', 'all')
     
     results = []
     
