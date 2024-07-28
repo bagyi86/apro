@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ad Pairing Search</title>
+</head>
+<body>
+    <form id="search-form">
+        <input type="text" id="keyword" placeholder="Keyword">
+        <input type="text" id="urls" placeholder="URLs (comma separated)">
+        <input type="number" id="min-price" placeholder="Minimum Price">
+        <input type="number" id="max-price" placeholder="Maximum Price">
+        <input type="text" id="location" placeholder="Location">
+        <button type="submit">Search</button>
+    </form>
+    <div id="results"></div>
+    <script>
+        document.getElementById('search-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const keyword = document.getElementById('keyword').value;
+            const urls = document.getElementById('urls').value.split(',');
+            const minPrice = document.getElementById('min-price').value;
+            const maxPrice = document.getElementById('max-price').value;
+            const location = document.getElementById('location').value;
+
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    keyword: keyword,
+                    urls: urls,
+                    minPrice: minPrice,
+                    maxPrice: maxPrice,
+                    location: location
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = '';
+                data.forEach(result => {
+                    const resultItem = document.createElement('div');
+                    resultItem.innerHTML = `
+                        <h3>${result.title}</h3>
+                        <p>${result.price}</p>
+                        <p>${result.date}</p>
+                        <a href="${result.link}">Link</a>
+                    `;
+                    resultsDiv.appendChild(resultItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
